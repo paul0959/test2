@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Evaluare Matematică - Solomon Haliță</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonturi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Iconițe (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MathJax pentru Matematică -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            startup: { typeset: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Html2Canvas pentru export JPG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; 
+            background-color: #020617; /* slate-950 */
+        }
+        
+        .math-text {
+            font-family: 'Cambria Math', 'Times New Roman', Times, serif !important;
+            letter-spacing: 0.02em;
+        }
+
+        mjx-container { outline: none; }
+        
+        /* Scrollbar personalizat */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
+        
+        /* Utilitare pentru a ascunde elemente */
+        .d-none { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen p-0 sm:p-6 flex items-center justify-center selection:bg-indigo-500/30 text-slate-50">
+
+    <!-- Main App Container - Mobile Look -->
+    <div class="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] bg-[#0f172a] sm:rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.5)] border-0 sm:border-[8px] sm:border-slate-800 overflow-hidden flex flex-col p-6 lg:p-8">
+        
+        <!-- Gradients de fundal -->
+        <div class="absolute inset-0 pointer-events-none z-0 bg-slate-900">
+           <div class="absolute top-[-10%] left-[-20%] w-[60%] h-[40%] bg-indigo-600/20 blur-[100px] rounded-full"></div>
+           <div class="absolute bottom-[-10%] right-[-20%] w-[60%] h-[40%] bg-purple-600/20 blur-[100px] rounded-full"></div>
+        </div>
+
+        <!-- Antet -->
+        <header class="relative z-10 text-center mb-4 shrink-0">
+          <h1 class="text-[10px] font-bold tracking-widest uppercase text-indigo-400 mb-1">Solomon Haliță</h1>
+          <p class="text-[10px] font-semibold text-slate-400 mb-2">Clasa a X-a B • Filologie</p>
+          <div class="w-12 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"></div>
+        </header>
+
+        <!-- ECRAN 1: INTRO -->
+        <div id="scr-intro" class="relative z-10 h-full w-full overflow-y-auto custom-scrollbar flex flex-col transition-opacity duration-300">
+            <!-- Container interior setat cu min-h-full si pb-10 pt a nu taia butonul rosu de jos -->
+            <div class="flex flex-col justify-center items-center w-full max-w-sm mx-auto min-h-full pb-10 pt-4">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-3 shadow-xl border border-white/20 backdrop-blur-md">
+                        <i class="fa-solid fa-user text-indigo-400 text-4xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white tracking-tight">Să începem</h2>
+                    <p class="text-slate-400 text-sm mt-2">Introdu numele complet și alege varianta.</p>
+                </div>
+
+                <div class="w-full space-y-5">
+                    <div class="relative group">
+                        <input 
+                            type="text" 
+                            id="user-name"
+                            class="w-full px-6 py-4 rounded-2xl bg-white/10 border-2 border-slate-600/50 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-white/20 outline-none transition-all font-semibold backdrop-blur-sm"
+                            placeholder="Nume și Prenume"
+                        />
+                    </div>
+
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <select
+                            id="selected-variant"
+                            class="w-full px-6 py-4 rounded-2xl bg-white/10 border-2 border-slate-600/50 text-white focus:border-indigo-500 focus:bg-white/20 outline-none transition-all font-semibold backdrop-blur-sm appearance-none cursor-pointer"
+                        >
+                            <option value="" disabled selected class="text-slate-800">Alege Varianta de Test...</option>
+                            <option value="1" class="text-slate-800">Varianta 1</option>
+                            <option value="2" class="text-slate-800">Varianta 2</option>
+                            <option value="3" class="text-slate-800">Varianta 3</option>
+                            <option value="4" class="text-slate-800">Varianta 4</option>
+                        </select>
+                    </div>
+
+                    <div id="error-box" class="d-none bg-rose-500/10 border border-rose-500/50 text-rose-400 text-sm font-bold p-3 rounded-xl text-center">
+                        <!-- Mesaj eroare -->
+                    </div>
+
+                    <!-- BUTON INCEPERE (ROSU) - Vizibil garantat acum datorita scroll-ului setat corect -->
+                    <button 
+                        onclick="startTest()"
+                        class="w-full mt-4 p-5 rounded-2xl bg-red-600 text-white font-extrabold shadow-lg shadow-red-500/30 hover:bg-red-500 active:scale-95 transition-all flex justify-center items-center gap-2 text-lg border-2 border-red-500 hover:border-red-400"
+                    >
+                        Începe Evaluarea <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ECRAN 2: QUIZ -->
+        <div id="scr-quiz" class="d-none relative z-10 flex flex-col h-full transition-opacity duration-300">
+            <!-- Header cu Dots -->
+            <div class="flex justify-between items-center mb-6 shrink-0">
+                <span id="quiz-variant-tag" class="text-[11px] font-black bg-slate-800 text-white px-3 py-1.5 rounded-lg border border-slate-700 shadow-sm">
+                    VAR X
+                </span>
+                <div id="nav-dots" class="flex gap-1.5">
+                    <!-- Dots generate dinamic -->
+                </div>
+            </div>
+
+            <!-- Zona Întrebare -->
+            <div class="bg-white rounded-[24px] p-6 shadow-xl border border-slate-200 mb-6 flex flex-col items-center justify-center min-h-[160px] relative overflow-hidden shrink-0">
+                <div class="absolute top-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                <p id="quiz-q-num" class="text-slate-400 text-sm font-bold w-full text-left mb-2 uppercase tracking-widest font-sans">Exercițiul X</p>
+                <div id="quiz-q-text" class="text-slate-800 font-bold text-center w-full text-[19px] leading-relaxed math-text">
+                    <!-- Întrebarea -->
+                </div>
+            </div>
+
+            <!-- Zona Opțiuni -->
+            <div id="quiz-options" class="space-y-3 flex-grow overflow-y-auto custom-scrollbar pr-1 pb-4">
+                <!-- Opțiuni generate dinamic -->
+            </div>
+
+            <!-- Footer Navigation -->
+            <div class="mt-4 grid grid-cols-2 gap-4 shrink-0 pb-2">
+                <button 
+                    id="btn-prev"
+                    onclick="handlePrev()" 
+                    class="flex justify-center items-center py-4 rounded-xl bg-slate-800 text-slate-300 font-bold text-sm hover:bg-slate-700 transition-all disabled:opacity-40 disabled:active:scale-100 active:scale-95 gap-2 font-sans"
+                >
+                    <i class="fa-solid fa-arrow-left"></i> Anterior
+                </button>
+                
+                <button 
+                    id="btn-next"
+                    onclick="handleNext()" 
+                    class="flex justify-center items-center py-4 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 hover:bg-indigo-500 transition-all active:scale-95 gap-2 font-sans"
+                >
+                    Următorul <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button 
+                    id="btn-finalize"
+                    onclick="finalizeTest()"
+                    class="d-none flex justify-center items-center py-4 rounded-xl font-bold text-sm shadow-lg transition-all gap-2 font-sans bg-slate-700 text-slate-500 cursor-not-allowed opacity-50"
+                >
+                    Finalizează Test <i class="fa-solid fa-check-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ECRAN 3: REZULTATE -->
+        <div id="scr-results" class="d-none relative z-10 flex flex-col h-full transition-opacity duration-300 overflow-y-auto custom-scrollbar">
+            <div class="flex-grow flex flex-col items-center justify-center py-6">
+                
+                <div class="w-40 h-40 shrink-0 rounded-full border-[10px] border-indigo-500 flex flex-col items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.3)] bg-slate-900 mb-6 relative">
+                    <span class="text-xs uppercase font-extrabold text-indigo-400 tracking-widest absolute top-6">Nota</span>
+                    <div id="res-score" class="text-6xl font-black text-white mt-4">10</div>
+                </div>
+                
+                <div class="text-center w-full mb-8 shrink-0">
+                    <h4 id="res-name" class="text-2xl font-extrabold text-white">Nume Elev</h4>
+                    <p id="res-variant" class="text-emerald-400 font-medium mt-1">Evaluare finalizată • Varianta X</p>
+                </div>
+
+                <div class="w-full mb-6 shrink-0">
+                    <button 
+                        id="btn-export"
+                        onclick="exportToJPG()"
+                        class="w-full py-4 rounded-2xl font-extrabold text-white text-sm shadow-lg shadow-indigo-500/20 flex justify-center items-center gap-2 transition-all bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 active:scale-95 border border-indigo-500"
+                    >
+                        <i class="fa-solid fa-image"></i> <span>Exportă Rezultatul (JPG)</span>
+                    </button>
+                </div>
+
+                <div class="w-full flex-grow flex flex-col shrink-0">
+                    <button 
+                        id="btn-toggle-barem"
+                        onclick="toggleBarem()" 
+                        class="w-full py-4 bg-emerald-500/10 text-emerald-400 rounded-2xl font-bold border border-emerald-500/30 text-sm flex justify-center items-center gap-2 transition-all hover:bg-emerald-500/20"
+                    >
+                        <i class="fa-solid fa-eye"></i> VIZUALIZEAZĂ BAREMUL
+                    </button>
+                    
+                    <div id="barem-container" class="d-none mt-4 w-full flex-col space-y-3 pb-4">
+                        <!-- Barem generat dinamic -->
+                    </div>
+                </div>
+
+                <button 
+                    onclick="restartApp()" 
+                    class="mt-8 text-sm text-slate-400 font-bold uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 shrink-0"
+                >
+                    <i class="fa-solid fa-rotate-left"></i> Ieșire
+                </button>
+            </div>
+        </div>
+
+        <!-- OVERLAY SECURITATE -->
+        <div id="security-overlay" class="d-none absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center transition-opacity duration-300">
+            <div class="w-24 h-24 bg-rose-500/20 rounded-full flex items-center justify-center mb-6 border border-rose-500/50">
+                <i class="fa-solid fa-shield-halved text-rose-500 text-5xl"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-white mb-3">Activitate Suspectă</h2>
+            <p class="text-slate-400 text-lg mb-10 max-w-xs">
+                Se pare că ai părăsit fereastra evaluării. Rămâi pe acest ecran pentru a evita anularea testului!
+            </p>
+            <button 
+                onclick="dismissSecurity()" 
+                class="w-full max-w-xs py-5 bg-white text-slate-900 font-extrabold rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all"
+            >
+                REVINO LA TEST
+            </button>
+        </div>
+
+    </div>
+
+    <!-- TEMPLATE EXPORT ASCUNS (Rendat off-screen pentru html2canvas) -->
+    <div id="export-template" style="display: none; position: absolute; left: -9999px; top: -9999px; width: 800px; background-color: #0f172a; padding: 60px; font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); height: 12px; border-radius: 10px; margin-bottom: 40px;"></div>
+        <div style="text-align: center;">
+            <h1 style="color: #f8fafc; margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -1px;">Liceul Teoretic Solomon Haliță</h1>
+            <p style="font-size: 20px; color: #94a3b8; margin: 10px 0; font-weight: 600;">Evaluare Matematică - Profil Filologie</p>
+            <div style="height: 2px; background: #334155; margin: 40px auto; width: 60%;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 30px; margin-top: 40px;">
+            <div style="flex: 1; background: #1e293b; padding: 40px; border-radius: 24px; border: 1px solid #334155;">
+                <p style="color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 800; margin: 0 0 5px 0;">Elev</p>
+                <p id="exp-name" style="color: #f8fafc; font-size: 28px; font-weight: 800; margin: 0 0 30px 0;">NUME</p>
+                
+                <p style="color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 800; margin: 0 0 5px 0;">Subiect</p>
+                <p style="color: #cbd5e1; font-size: 20px; font-weight: 600; margin: 0 0 30px 0;">Puteri, Radicali, Logaritmi</p>
+                
+                <p style="color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 800; margin: 0 0 5px 0;">Varianta Extrasă</p>
+                <p id="exp-variant" style="color: #818cf8; font-size: 24px; font-weight: 800; margin: 0;">Numărul X</p>
+            </div>
+
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                <div style="background: #1e293b; padding: 40px; border-radius: 24px; border: 2px solid #4f46e5; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                    <p style="color: #818cf8; font-size: 16px; text-transform: uppercase; font-weight: 800; margin: 0;">Nota Finală</p>
+                    <h3 id="exp-score" style="margin: 10px 0; font-size: 110px; color: #f8fafc; font-weight: 900; line-height: 1;">10</h3>
+                    <p style="color: #94a3b8; font-size: 14px; margin: 0;">+10 Puncte din Oficiu incluse</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 30px; background: #020617; padding: 25px 40px; border-radius: 20px; border: 1px solid #1e293b;">
+            <div style="display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 18px; font-weight: 600;">
+               <i class="fa-solid fa-calendar" style="color:#818cf8;"></i> Data: <span id="exp-date"></span> la <span id="exp-time"></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 18px; font-weight: 600;">
+               <i class="fa-solid fa-clock" style="color:#10b981;"></i> Durata test: <span id="exp-duration"></span>
+            </div>
+        </div>
+        <div style="text-align: center; color: #475569; font-size: 14px; margin-top: 40px; font-weight: 600;">
+            Certificat digital emis automat prin platforma de evaluare.
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const DATABASE = {
+            1: [
+                { q: "Calculaţi valoarea expresiei cu puteri: $125^{\\frac{1}{3}}\\cdot5^{2}$", opts: ["5", "25", "125", "625"], ans: 2, just: "$125^{1/3} = \\sqrt[3]{125} = 5$. Deci $5 \\cdot 5^2 = 5^3 = 125$." },
+                { q: "Calculaţi: $\\frac{6^{4}\\cdot36^{2}}{216^{2}}$", opts: ["1", "6", "36", "216"], ans: 2, just: "$36 = 6^2$ și $216 = 6^3$. Avem $\\frac{6^4 \\cdot (6^2)^2}{(6^3)^2} = \\frac{6^4 \\cdot 6^4}{6^6} = \\frac{6^8}{6^6} = 6^2 = 36$." },
+                { q: "Efectuaţi calculul cu radicali: $\\sqrt{45}+2\\sqrt{20}-\\sqrt{80}$", opts: ["$\\sqrt{5}$", "$2\\sqrt{5}$", "$3\\sqrt{5}$", "$4\\sqrt{5}$"], ans: 2, just: "$\\sqrt{45}=3\\sqrt{5}$; $\\sqrt{20}=2\\sqrt{5}$; $\\sqrt{80}=4\\sqrt{5}$. Calcul: $3\\sqrt{5} + 2(2\\sqrt{5}) - 4\\sqrt{5} = 3\\sqrt{5} + 4\\sqrt{5} - 4\\sqrt{5} = 3\\sqrt{5}$." },
+                { q: "Calculaţi valoarea expresiei: $\\sqrt[3]{-1000}+\\sqrt[4]{16}$", opts: ["-8", "-12", "12", "8"], ans: 0, just: "$\\sqrt[3]{-1000} = -10$, iar $\\sqrt[4]{16} = 2$. Rezultat: $-10 + 2 = -8$." },
+                { q: "Domeniul maxim de existență pentru radicalul $\\sqrt{7x-21}$ este:", opts: ["$[3,\\infty)$", "$(3,\\infty)$", "$(-\\infty,3)$", "$\\mathbb{R}$"], ans: 0, just: "Condiție: $7x - 21 \\ge 0 \\implies 7x \\ge 21 \\implies x \\ge 3$. Domeniul este $[3, \\infty)$." },
+                { q: "Domeniul maxim de existență pentru logaritmul $\\log_{5}(x^{2}-4x+3)$ este:", opts: ["$(-\\infty,1)\\cup(3,\\infty)$", "$[1,3]$", "$(1,3)$", "$\\mathbb{R}\\setminus\\{1,3\\}$"], ans: 0, just: "Condiție: $x^2 - 4x + 3 > 0$. Rădăcinile sunt $x_1=1, x_2=3$. Fiind o ecuație de gradul 2, semnul e pozitiv în exteriorul rădăcinilor: $(-\\infty, 1) \\cup (3, \\infty)$." },
+                { q: "Utilizând proprietățile operațiilor cu logaritmi, calculați: $A=\\log_{2}40-\\log_{2}5$", opts: ["1", "2", "3", "8"], ans: 2, just: "Avem $\\log_{2}\\left(\\frac{40}{5}\\right) = \\log_{2}8 = \\log_{2}(2^3) = 3$." },
+                { q: "Calculați: $P=\\log_{2}5\\cdot \\log_{5}7\\cdot \\log_{7}16$", opts: ["2", "3", "4", "16"], ans: 2, just: "Aplicând schimbarea de bază, se reduc bazele intermediare: $\\log_{2}16 = \\log_{2}(2^4) = 4$." },
+                { q: "Calculaţi valoarea expresiei mixte: $E=3^{\\log_{3}15}+\\log_{2}(32)-100^{\\lg~2}$", opts: ["15", "16", "20", "24"], ans: 1, just: "Din formula $a^{\\log_a b} = b$, $3^{\\log_3 15} = 15$. $\\log_2 32 = 5$. $100^{\\lg 2} = (10^2)^{\\lg 2} = 10^{2\\lg 2} = 10^{\\lg 4} = 4$. Deci $15 + 5 - 4 = 16$." }
+            ],
+            2: [
+                { q: "Calculați valoarea expresiei cu puteri: $32^{\\frac{2}{5}}\\cdot2^{3}$", opts: ["4", "8", "16", "32"], ans: 3, just: "$32^{2/5} = (2^5)^{2/5} = 2^2 = 4$. Iar $2^3 = 8$. Deci $4 \\cdot 8 = 32$." },
+                { q: "Calculaţi: $\\frac{2^{7}\\cdot4^{3}}{8^{4}}$", opts: ["1", "2", "4", "8"], ans: 1, just: "Transformăm totul în baza 2: $\\frac{2^7 \\cdot (2^2)^3}{(2^3)^4} = \\frac{2^7 \\cdot 2^6}{2^{12}} = \\frac{2^{13}}{2^{12}} = 2^1 = 2$." },
+                { q: "Efectuaţi calculul cu radicali: $\\sqrt{150}-\\sqrt{24}+\\sqrt{54}$", opts: ["$2\\sqrt{6}$", "$4\\sqrt{6}$", "$6\\sqrt{6}$", "$8\\sqrt{6}$"], ans: 2, just: "$\\sqrt{150}=5\\sqrt{6}$; $\\sqrt{24}=2\\sqrt{6}$; $\\sqrt{54}=3\\sqrt{6}$. Rezultat: $5\\sqrt{6} - 2\\sqrt{6} + 3\\sqrt{6} = 6\\sqrt{6}$." },
+                { q: "Calculați valoarea expresiei: $\\sqrt[3]{-216}+\\sqrt[4]{625}$", opts: ["-1", "1", "11", "-11"], ans: 0, just: "$\\sqrt[3]{-216} = -6$. $\\sqrt[4]{625} = 5$. Deci $-6 + 5 = -1$." },
+                { q: "Domeniul maxim de existență pentru radicalul $\\sqrt{12-4x}$ este:", opts: ["$(-\\infty,3]$", "$[3,\\infty)$", "$(3,\\infty)$", "$(-\\infty,3)$"], ans: 0, just: "Condiție: $12 - 4x \\ge 0 \\implies 12 \\ge 4x \\implies x \\le 3$. Intervalul este $(-\\infty, 3]$." },
+                { q: "Domeniul maxim de existență pentru logaritmul $\\log_{3}(x^{2}-8x+15)$ este:", opts: ["$(-\\infty,3)\\cup(5,\\infty)$", "$(3,5)$", "$[3,5]$", "$\\mathbb{R}$"], ans: 0, just: "Condiție $x^2 - 8x + 15 > 0$. Rădăcinile sunt $x_1=3, x_2=5$. Parabola ia valori pozitive în exterior: $(-\\infty, 3) \\cup (5, \\infty)$." },
+                { q: "Utilizând proprietățile operațiilor cu logaritmi, calculați: $A=\\log_{3}54-\\log_{3}2$", opts: ["3", "27", "2", "4"], ans: 0, just: "$A = \\log_{3}\\left(\\frac{54}{2}\\right) = \\log_{3}27 = \\log_{3}(3^3) = 3$." },
+                { q: "Calculaţi: $P=\\log_{3}8\\cdot \\log_{4}5\\cdot \\log_{5}9$", opts: ["2", "3", "4", "6"], ans: 1, just: "Aducem la bazele 2 și 3: $\\log_3(2^3) \\cdot \\frac{\\log_3 5}{\\log_3 4} \\cdot \\log_5(3^2) = 3\\log_3 2 \\cdot \\frac{1}{2\\log_3 2} \\cdot 2 = 3$." },
+                { q: "Calculaţi valoarea expresiei mixte: $E=5^{\\log_{5}12}+\\log_{4}(64)-10^{2~\\lg~3}$", opts: ["3", "6", "9", "12"], ans: 1, just: "$5^{\\log_5 12} = 12$. $\\log_4 64 = 3$. $10^{2\\lg 3} = 10^{\\lg 9} = 9$. Rezultat: $12 + 3 - 9 = 6$." }
+            ],
+            3: [
+                { q: "Calculați valoarea expresiei cu puteri: $1000^{\\frac{2}{3}}\\cdot10^{-1}$", opts: ["1", "10", "100", "1000"], ans: 1, just: "$1000^{2/3} = (10^3)^{2/3} = 10^2 = 100$. Deci $100 \\cdot 10^{-1} = 100 / 10 = 10$." },
+                { q: "Calculaţi: $\\frac{10^{5}\\cdot100^{2}}{1000^{2}}$", opts: ["10", "100", "1000", "10000"], ans: 2, just: "$100 = 10^2, 1000 = 10^3$. Avem $\\frac{10^5 \\cdot 10^4}{10^6} = \\frac{10^9}{10^6} = 10^3 = 1000$." },
+                { q: "Efectuați calculul cu radicali: $\\sqrt{28}+\\sqrt{63}-\\sqrt{175}$", opts: ["0", "$\\sqrt{7}$", "$-\\sqrt{7}$", "$2\\sqrt{7}$"], ans: 0, just: "$\\sqrt{28}=2\\sqrt{7}$; $\\sqrt{63}=3\\sqrt{7}$; $\\sqrt{175}=5\\sqrt{7}$. Calcul: $2\\sqrt{7} + 3\\sqrt{7} - 5\\sqrt{7} = 0$." },
+                { q: "Calculaţi valoarea expresiei: $\\sqrt[3]{-343}+\\sqrt[4]{81}$", opts: ["-10", "-4", "4", "10"], ans: 1, just: "$\\sqrt[3]{-343} = -7$. $\\sqrt[4]{81} = 3$. Rezultat: $-7 + 3 = -4$." },
+                { q: "Domeniul maxim de existenţă pentru radicalul $\\sqrt{5x-20}$ este:", opts: ["$[4,\\infty)$", "$(4,\\infty)$", "$(-\\infty,4]$", "$\\mathbb{R}$"], ans: 0, just: "Condiție: $5x - 20 \\ge 0 \\implies 5x \\ge 20 \\implies x \\ge 4$. Domeniul: $[4, \\infty)$." },
+                { q: "Domeniul maxim de existență pentru logaritmul $\\log_{7}(x^{2}-x-2)$ este:", opts: ["$(-\\infty,-1)\\cup(2,\\infty)$", "$(-1,2)$", "$[-1,2]$", "$\\mathbb{R}$"], ans: 0, just: "Ecuația $x^2-x-2=0$ are rădăcinile $x_1=-1, x_2=2$. Parabola este $>0$ în exterior: $(-\\infty, -1) \\cup (2, \\infty)$." },
+                { q: "Utilizând proprietățile operațiilor cu logaritmi, calculați: $A=\\log_{5}100-\\log_{5}4$", opts: ["2", "5", "25", "10"], ans: 0, just: "$A = \\log_5(\\frac{100}{4}) = \\log_5 25 = 2$." },
+                { q: "Calculați: $P=\\log_{5}2\\cdot \\log_{2}9\\cdot \\log_{3}25$", opts: ["2", "3", "4", "5"], ans: 2, just: "Transformăm: $\\log_5 2 \\cdot 2\\log_2 3 \\cdot 2\\log_3 5 = 4 \\cdot (\\log_5 2 \\cdot \\log_2 3 \\cdot \\log_3 5) = 4 \\cdot \\log_5 5 = 4$." },
+                { q: "Calculaţi valoarea expresiei mixte: $E=7^{\\log_{7}20}+\\log_{\\sqrt{2}}(4)-100^{\\frac{1}{2}\\lg~16}$", opts: ["4", "6", "8", "10"], ans: 2, just: "$7^{\\log_7 20} = 20$. $\\log_{\\sqrt{2}}(4) = \\log_{2^{1/2}}(2^2) = \\frac{2}{1/2} = 4$. $100^{\\frac{1}{2}\\lg 16} = 10^{2 \\cdot \\frac{1}{2} \\lg 16} = 10^{\\lg 16} = 16$. Rezultat: $20 + 4 - 16 = 8$." }
+            ],
+            4: [
+                { q: "Calculaţi valoarea expresiei cu puteri: $27^{\\frac{4}{3}}\\cdot3^{-3}$", opts: ["1", "3", "9", "27"], ans: 1, just: "$27^{4/3} = (3^3)^{4/3} = 3^4 = 81$. Deci $81 \\cdot 3^{-3} = 81 / 27 = 3$." },
+                { q: "Calculaţi: $\\frac{5^{6}\\cdot25^{2}}{125^{3}}$", opts: ["1", "5", "25", "125"], ans: 1, just: "$25 = 5^2, 125 = 5^3$. $\\frac{5^6 \\cdot (5^2)^2}{(5^3)^3} = \\frac{5^6 \\cdot 5^4}{5^9} = \\frac{5^{10}}{5^9} = 5^1 = 5$." },
+                { q: "Efectuaţi calculul cu radicali: $\\sqrt{108}-\\sqrt{75}+\\sqrt{27}$", opts: ["$\\sqrt{3}$", "$2\\sqrt{3}$", "$3\\sqrt{3}$", "$4\\sqrt{3}$"], ans: 3, just: "$\\sqrt{108}=6\\sqrt{3}$; $\\sqrt{75}=5\\sqrt{3}$; $\\sqrt{27}=3\\sqrt{3}$. Calcul: $6\\sqrt{3} - 5\\sqrt{3} + 3\\sqrt{3} = 4\\sqrt{3}$." },
+                { q: "Calculaţi valoarea expresiei: $\\sqrt[3]{-512}+\\sqrt[4]{10000}$", opts: ["2", "-2", "18", "-18"], ans: 0, just: "$\\sqrt[3]{-512} = -8$. $\\sqrt[4]{10000} = 10$. Deci $-8 + 10 = 2$." },
+                { q: "Domeniul maxim de existență pentru radicalul $\\sqrt{18-6x}$ este:", opts: ["$(-\\infty,3]$", "$[3,\\infty)$", "$(-\\infty,3)$", "$\\mathbb{R}$"], ans: 0, just: "Condiție: $18 - 6x \\ge 0 \\implies 18 \\ge 6x \\implies 3 \\ge x$. Deci intervalul este $(-\\infty, 3]$." },
+                { q: "Domeniul maxim de existență pentru logaritmul $\\log_{2}(x^{2}-9)$ este:", opts: ["$(-\\infty,-3)\\cup(3,\\infty)$", "$(-3,3)$", "$[-3,3]$", "$\\mathbb{R}\\setminus\\{-3,3\\}$"], ans: 0, just: "Ecuația $x^2-9>0$ are rădăcinile $x=\\pm 3$. Valori pozitive în exteriorul rădăcinilor: $(-\\infty, -3) \\cup (3, \\infty)$." },
+                { q: "Utilizând proprietățile operațiilor cu logaritmi, calculați: $A=\\log_{4}80-\\log_{4}5$", opts: ["2", "4", "16", "8"], ans: 0, just: "Folosind regula împărțirii: $A = \\log_4(\\frac{80}{5}) = \\log_4(16) = 2$." },
+                { q: "Calculați: $P=\\log_{4}7\\cdot \\log_{7}81\\cdot \\log_{9}2$", opts: ["1", "2", "3", "4"], ans: 0, just: "Reducem bazele folosind schimbarea de bază: $\\frac{\\log 7}{\\log 4} \\cdot \\frac{\\log 81}{\\log 7} \\cdot \\frac{\\log 2}{\\log 9} = \\frac{\\log 81 \\cdot \\log 2}{\\log 4 \\cdot \\log 9} = \\frac{4\\log 3 \\cdot \\log 2}{2\\log 2 \\cdot 2\\log 3} = 1$." },
+                { q: "Calculați valoarea expresiei mixte: $E=2^{\\log_{2}18}+\\log_{\\frac{1}{2}}(16)-10^{\\lg~14}$", opts: ["0", "1", "2", "4"], ans: 0, just: "$2^{\\log_2 18} = 18$. $\\log_{1/2} 16 = -4$. $10^{\\lg 14} = 14$. Calcul: $18 - 4 - 14 = 0$." }
+            ]
+        };
+
+        // STARE APLICAȚIE
+        let appState = 'intro'; // 'intro', 'quiz', 'results'
+        let userName = '';
+        let selectedVariant = '';
+        let questions = [];
+        let currentIndex = 0;
+        let answers = Array(9).fill(null);
+        let score = 1;
+        let startTime = null;
+        let testStats = { date: '', time: '', duration: '' };
+
+        // DOM ELEMENTS
+        const elUserName = document.getElementById('user-name');
+        const elSelectedVariant = document.getElementById('selected-variant');
+        const elErrorBox = document.getElementById('error-box');
+        const scrIntro = document.getElementById('scr-intro');
+        const scrQuiz = document.getElementById('scr-quiz');
+        const scrResults = document.getElementById('scr-results');
+        const securityOverlay = document.getElementById('security-overlay');
+
+        // LISTENERS
+        elUserName.addEventListener('input', (e) => {
+            const cleanName = e.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            e.target.value = cleanName;
+            userName = cleanName;
+            elErrorBox.classList.add('d-none');
+        });
+
+        elSelectedVariant.addEventListener('change', (e) => {
+            selectedVariant = e.target.value;
+            elErrorBox.classList.add('d-none');
+        });
+
+        window.addEventListener('blur', () => {
+            if (appState === 'quiz') {
+                securityOverlay.classList.remove('d-none');
+            }
+        });
+
+        function showError(msg) {
+            elErrorBox.textContent = msg;
+            elErrorBox.classList.remove('d-none');
+        }
+
+        function dismissSecurity() {
+            securityOverlay.classList.add('d-none');
+        }
+
+        // FUNCTII CORE
+        function startTest() {
+            if (!userName.trim()) {
+                showError("Introduceți numele complet!");
+                return;
+            }
+            if (!selectedVariant) {
+                showError("Vă rugăm să alegeți o variantă de test!");
+                return;
+            }
+
+            const normalizedName = userName.trim().toLowerCase();
+            
+            // Verificare local storage
+            let attempts = [];
+            try {
+                attempts = JSON.parse(localStorage.getItem('eval_math_attempts') || '[]');
+            } catch(e) {}
+
+            if (attempts.includes(normalizedName)) {
+                showError("Ai susținut deja acest test! Nu se permit încercări multiple.");
+                return;
+            }
+
+            questions = DATABASE[selectedVariant];
+            answers = Array(9).fill(null);
+            currentIndex = 0;
+            score = 1;
+            startTime = Date.now();
+            
+            switchScreen('quiz');
+            renderQuiz();
+        }
+
+        function switchScreen(target) {
+            appState = target;
+            scrIntro.classList.add('d-none');
+            scrQuiz.classList.add('d-none');
+            scrResults.classList.add('d-none');
+
+            if (target === 'intro') scrIntro.classList.remove('d-none');
+            if (target === 'quiz') scrQuiz.classList.remove('d-none');
+            if (target === 'results') scrResults.classList.remove('d-none');
+        }
+
+        function renderQuiz() {
+            const q = questions[currentIndex];
+            const isLast = currentIndex === 8;
+            const alreadyAnswered = answers[currentIndex] !== null;
+
+            // Update Header (Dots & Tag)
+            document.getElementById('quiz-variant-tag').innerText = `VAR ${selectedVariant}`;
+            const dotsContainer = document.getElementById('nav-dots');
+            dotsContainer.innerHTML = '';
+            for(let i=0; i<9; i++) {
+                let dotClass = 'w-2.5 h-2.5 rounded-full transition-all duration-300 ';
+                if (i === currentIndex) dotClass += 'scale-150 bg-indigo-500';
+                else if (answers[i] !== null) dotClass += 'bg-emerald-500';
+                else dotClass += 'bg-slate-700';
+                
+                dotsContainer.innerHTML += `<div class="${dotClass}"></div>`;
+            }
+
+            // Update Question
+            document.getElementById('quiz-q-num').innerText = `Exercițiul ${currentIndex + 1}`;
+            document.getElementById('quiz-q-text').innerHTML = q.q;
+
+            // Update Options
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            q.opts.forEach((opt, idx) => {
+                const isSelected = answers[currentIndex] === idx;
+                let btnClass = "bg-white border-slate-200 text-slate-700 hover:border-indigo-300 active:scale-[0.98]";
+                let iconClass = "bg-slate-100 text-slate-500";
+                let rightIcon = "";
+
+                if (alreadyAnswered) {
+                    btnClass = btnClass.replace("hover:border-indigo-300 active:scale-[0.98]", "");
+                    if (idx === q.ans) {
+                        btnClass = "bg-emerald-500 border-emerald-600 text-white shadow-lg shadow-emerald-500/20";
+                        iconClass = "bg-white/20 text-white";
+                        rightIcon = '<i class="fa-solid fa-check-circle text-white ml-auto text-xl shrink-0"></i>';
+                    } else if (isSelected) {
+                        btnClass = "bg-rose-500 border-rose-600 text-white";
+                        iconClass = "bg-white/20 text-white";
+                        rightIcon = '<i class="fa-solid fa-xmark-circle text-white ml-auto text-xl shrink-0"></i>';
+                    } else {
+                        btnClass = "bg-white/50 border-slate-100 text-slate-400 opacity-60";
+                    }
+                }
+
+                const btnHtml = `
+                    <button 
+                        onclick="selectOption(${idx})"
+                        ${alreadyAnswered ? 'disabled' : ''}
+                        class="w-full text-left p-4 rounded-2xl border-2 shadow-sm flex items-center gap-4 transition-all duration-300 ${btnClass}"
+                    >
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm uppercase shrink-0 transition-colors font-sans ${iconClass}">
+                            ${String.fromCharCode(97 + idx)}
+                        </div>
+                        <span class="font-bold text-[18px] math-text">${opt}</span>
+                        ${rightIcon}
+                    </button>
+                `;
+                optionsContainer.innerHTML += btnHtml;
+            });
+
+            // Update Navigation Buttons
+            document.getElementById('btn-prev').disabled = currentIndex === 0;
+            const btnNext = document.getElementById('btn-next');
+            const btnFinalize = document.getElementById('btn-finalize');
+            
+            if (isLast) {
+                btnNext.classList.add('d-none');
+                btnFinalize.classList.remove('d-none');
+                
+                const allAnswered = !answers.includes(null);
+                if (allAnswered) {
+                    btnFinalize.className = "flex justify-center items-center py-4 rounded-xl font-bold text-sm shadow-lg transition-all gap-2 font-sans bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/30 active:scale-95 border border-emerald-500";
+                    btnFinalize.disabled = false;
+                } else {
+                    btnFinalize.className = "flex justify-center items-center py-4 rounded-xl font-bold text-sm shadow-lg transition-all gap-2 font-sans bg-slate-700 text-slate-500 cursor-not-allowed opacity-50";
+                    btnFinalize.disabled = true;
+                }
+            } else {
+                btnNext.classList.remove('d-none');
+                btnFinalize.classList.add('d-none');
+            }
+
+            // MathJax re-render
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([document.getElementById('scr-quiz')]);
+            }
+        }
+
+        function selectOption(idx) {
+            if (answers[currentIndex] !== null) return;
+            answers[currentIndex] = idx;
+            renderQuiz();
+        }
+
+        function handleNext() {
+            if (currentIndex < 8) {
+                currentIndex++;
+                renderQuiz();
+            }
+        }
+
+        function handlePrev() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuiz();
+            }
+        }
+
+        function finalizeTest() {
+            if (answers.includes(null)) return;
+
+            const end = Date.now();
+            const diffInSeconds = Math.floor((end - startTime) / 1000);
+            const mins = Math.floor(diffInSeconds / 60);
+            const secs = diffInSeconds % 60;
+            testStats.duration = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+
+            const now = new Date();
+            testStats.date = now.toLocaleDateString('ro-RO');
+            testStats.time = now.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' });
+
+            score = 1;
+            answers.forEach((ans, idx) => {
+                if (ans === questions[idx].ans) score += 1;
+            });
+
+            // Save Attempt
+            const normalizedName = userName.trim().toLowerCase();
+            try {
+                let attempts = JSON.parse(localStorage.getItem('eval_math_attempts') || '[]');
+                if (!attempts.includes(normalizedName)) {
+                    attempts.push(normalizedName);
+                    localStorage.setItem('eval_math_attempts', JSON.stringify(attempts));
+                }
+            } catch(e) {}
+
+            renderResults();
+        }
+
+        function renderResults() {
+            switchScreen('results');
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-name').innerText = userName;
+            document.getElementById('res-variant').innerText = `Evaluare finalizată • Varianta ${selectedVariant}`;
+
+            // Populate Export template
+            document.getElementById('exp-name').innerText = userName.toUpperCase() || 'N/A';
+            document.getElementById('exp-variant').innerText = `Numărul ${selectedVariant}`;
+            document.getElementById('exp-score').innerText = score;
+            document.getElementById('exp-date').innerText = testStats.date;
+            document.getElementById('exp-time').innerText = testStats.time;
+            document.getElementById('exp-duration').innerText = testStats.duration;
+        }
+
+        function toggleBarem() {
+            const container = document.getElementById('barem-container');
+            const isHidden = container.classList.contains('d-none');
+            const btn = document.getElementById('btn-toggle-barem');
+
+            if (isHidden) {
+                container.innerHTML = '';
+                questions.forEach((q, i) => {
+                    const ansLetter = String.fromCharCode(97 + q.ans);
+                    container.innerHTML += `
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                            <p class="font-extrabold text-indigo-600 mb-2 uppercase text-[11px] tracking-wider border-b border-slate-100 pb-2 flex justify-between font-sans">
+                                <span>Subiectul ${i + 1}</span>
+                                <span class="text-emerald-500">Răspuns corect: ${ansLetter}</span>
+                            </p>
+                            <div class="text-slate-700 text-[15px] font-medium leading-relaxed math-text">${q.just}</div>
+                        </div>
+                    `;
+                });
+                container.classList.remove('d-none');
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> ASCUNDE BAREMUL';
+                
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise([container]);
+                }
+            } else {
+                container.classList.add('d-none');
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i> VIZUALIZEAZĂ BAREMUL';
+            }
+        }
+
+        async function exportToJPG() {
+            if (!window.html2canvas) {
+                alert('Modulul de export se încarcă, vă rugăm să așteptați 2 secunde și să reîncercați.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-export');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Se generează...</span>';
+            btn.classList.add('opacity-80', 'cursor-wait');
+            
+            try {
+                const exportElement = document.getElementById('export-template');
+                exportElement.style.display = 'block';
+                
+                const canvas = await html2canvas(exportElement, {
+                    scale: 2,
+                    backgroundColor: '#0f172a',
+                    logging: false
+                });
+                
+                exportElement.style.display = 'none';
+                
+                const link = document.createElement('a');
+                link.download = `Rezultat_Mate_${userName.replace(/\s+/g, '_')}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Eroare la generarea JPG-ului.');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-image"></i> <span>Exportă Rezultatul (JPG)</span>';
+                btn.classList.remove('opacity-80', 'cursor-wait');
+            }
+        }
+
+        function restartApp() {
+            elUserName.value = '';
+            elSelectedVariant.value = '';
+            userName = '';
+            selectedVariant = '';
+            elErrorBox.classList.add('d-none');
+            dismissSecurity();
+            document.getElementById('barem-container').classList.add('d-none');
+            document.getElementById('btn-toggle-barem').innerHTML = '<i class="fa-solid fa-eye"></i> VIZUALIZEAZĂ BAREMUL';
+            switchScreen('intro');
+        }
+    </script>
+</body>
+</html>
